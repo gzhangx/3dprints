@@ -1,0 +1,119 @@
+curSel = Gui.Selection.getSelectionEx()[0]
+edge = curSel.SubObjects[0]
+
+edge.Curve.Radius
+
+
+curSel.Object.Support: [(<PartDesign::Pad>, ('Face2',))]
+
+body = curSel.Object.Parents[0][0] #(parents 0 is (body,'sketch'))
+
+
+
+
+# sk4.Support = (App.getDocument('Unnamed').getObject('Pad'),['Face2',])
+sk4 = body.newObject('Sketcher::SketchObject','SketchTemp1')
+sk4.Support = curSel.Object.Support;
+sk4.MapMode = 'FlatFace'
+#sk4.AttachmentOffset = App.Placement(App.Vector(0.00,0.00,0.00),App.Rotation(App.Vector(1.00,0.00,0.00),90.00))
+App.ActiveDocument.recompute()
+
+
+edge1 = curSel.SubObjects[0]
+edge1.Edges[0].Curve.Position
+
+sk4.AttachmentOffset = App.Placement(edge1.Edges[0].Curve.Center,App.Rotation(App.Vector(1.00,0.00,0.00),90.00))\\
+
+sub = curSel.SubObjects[0]  //curSel =>sketch006 edge1
+sub.Curve  /circle radius  # sub.Curve.TypeId = 'Part::GeomCircle'
+
+
+
+pt = curSel.SubObjects[0].Curve.Center - curSel.Object.Placement.Base
+
+sk4.AttachmentOffset = App.Placement(edge1.Edges[0].Curve.Center,App.Rotation(App.Vector(1.00,0.00,0.00),90.00))\\
+
+
+ptt = FreeCAD.Vector(-pt.x, pt.y, pt.z)
+ppt = (ct.y,-ct.x, ct.z)
+sk4.AttachmentOffset = App.Placement(ppt,App.Rotation(App.Vector(1.00,0.00,0.00),90.00))
+
+
+
+
+
+
+
+
+body = App.ActiveDocument.Body
+#select circle
+Gui.Selection.clearSelection()
+Gui.Selection.addSelection('Unnamed','Body','Sketch001.Edge1',17.2861,-17.0396,4.34194)
+
+#get selection
+curSel = Gui.Selection.getSelectionEx()[0]   #curSel.Object is now sketch,
+cir = curSel.SubObjects[0]  #get the circle on sketch "SketchRotated, or Sketch002"
+egmPos = int(curSel.SubElementNames[0][4:])-1
+gem = curSel.Object.Geometry[egmPos]
+
+
+# cir.Curve.Location center of circle
+# curSel.Object.Placement.Base center of sketch?
+
+sk4 = body.newObject('Sketcher::SketchObject','SketchTemp1')
+sk4.Support = curSel.Object.Support;
+sk4.MapMode = 'FlatFace'
+#sk4.AttachmentOffset = App.Placement(App.Vector(8.00,6.00,0.00),App.Rotation(App.Vector(1.00,0.00,0.00),0.00))
+App.ActiveDocument.recompute()
+
+
+
+#curSel.FullName= "(App.getDocument('Unnamed').getObject('Sketch001'),['Edge1',])"
+#curSel.SubElementNames = ('Edge1',)
+curSel.SubObjects[0].Curve  #circle in global def
+curSel.Object.Geometry #shows circle with dist and dir
+
+g0 = curSel.Object.Geometry[0]  #g0.Center, g0.Radius
+
+
+
+egmPos = int(curSel.SubElementNames[0][4:])-1
+
+
+
+import math
+
+toothSize = 1.8
+helixPitch = toothSize + 0.1
+
+body = App.ActiveDocument.Body
+#get selection
+curSel = Gui.Selection.getSelectionEx()[0]   #curSel.Object is now sketch,
+egmPos = int(curSel.SubElementNames[0][4:])-1
+gem = curSel.Object.Geometry[egmPos]
+radius = gem.Radius;
+
+sk4 = body.newObject('Sketcher::SketchObject','SketchTemp_'+curSel.Object.Name+'_Edge'+str(egmPos))
+sk4.Support = curSel.Object.Support;
+sk4.MapMode = 'FlatFace'
+sk4.AttachmentOffset = App.Placement(gem.Location,App.Rotation(App.Vector(1.00,0.00,0.00),90.00))
+App.ActiveDocument.recompute()
+
+Gui.runCommand('Sketcher_CreateLine',0)
+height = math.sqrt(toothSize*toothSize*3/4);
+sk4.addGeometry(Part.LineSegment(App.Vector(radius, toothSize/2,0),App.Vector(radius+height,0,0)),False)
+sk4.addGeometry(Part.LineSegment(App.Vector(radius+height,0,0), App.Vector(radius, -toothSize/2,0)),False)
+sk4.addGeometry(Part.LineSegment(App.Vector(radius, -toothSize/2,0), App.Vector(radius, toothSize/2,0)),False)
+sk4.addConstraint(Sketcher.Constraint('Equal',2,0)) 
+sk4.addConstraint(Sketcher.Constraint('Equal',2,1)) 
+sk4.addConstraint(Sketcher.Constraint('Distance',2, toothSize)) 
+sk4.setDatum(2,App.Units.Quantity(str(toothSize)+' mm'))
+
+sk4.addConstraint(Sketcher.Constraint('Coincident', 0, 2, 1, 1))
+sk4.addConstraint(Sketcher.Constraint('Coincident', 1, 2, 2, 1))
+sk4.addConstraint(Sketcher.Constraint('Coincident', 2, 2, 0, 1))
+sk4.addConstraint(Sketcher.Constraint('Parallel',2,-2)) 
+sk4.addConstraint(Sketcher.Constraint('PointOnObject',0,2,-1))
+Gui.runCommand('Sketcher_ConstrainDistanceX',0)
+sk4.addConstraint(Sketcher.Constraint('DistanceX',-1,1,0,1, radius)) 
+sk4.setDatum(8,App.Units.Quantity(str(radius)+' mm'))
