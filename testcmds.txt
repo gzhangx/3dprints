@@ -80,16 +80,21 @@ g0 = curSel.Object.Geometry[0]  #g0.Center, g0.Radius
 egmPos = int(curSel.SubElementNames[0][4:])-1
 
 
+curSel = Gui.Selection.getSelectionEx()[0]   #curSel.Object is now sketch,
+egmPos = int(curSel.SubElementNames[0][4:])-1
+
+#if it is a pocket
+skt = curSel.Object.Profile[0]
 
 import math
 
 toothSize = 1.8
 helixPitch = toothSize + 0.1
+helixDepth = 5
 
 body = App.ActiveDocument.Body
 #get selection
-curSel = Gui.Selection.getSelectionEx()[0]   #curSel.Object is now sketch,
-egmPos = int(curSel.SubElementNames[0][4:])-1
+
 gem = curSel.Object.Geometry[egmPos]
 radius = gem.Radius;
 
@@ -117,3 +122,15 @@ sk4.addConstraint(Sketcher.Constraint('PointOnObject',0,2,-1))
 Gui.runCommand('Sketcher_ConstrainDistanceX',0)
 sk4.addConstraint(Sketcher.Constraint('DistanceX',-1,1,0,1, radius)) 
 sk4.setDatum(8,App.Units.Quantity(str(radius)+' mm'))
+
+helix = body.newObject('PartDesign::SubtractiveHelix','SubtractiveHelix')
+helix.Profile = sk4
+helix.ReferenceAxis = (sk4, ['V_Axis'])
+helix.Mode = 0
+helix.Pitch = helixPitch
+helix.Height = helixDepth
+helix.Angle = 0
+helix.Growth = 0
+helix.LeftHanded = 0
+helix.Reversed = 0
+App.ActiveDocument.recompute()
