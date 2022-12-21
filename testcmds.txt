@@ -83,9 +83,6 @@ egmPos = int(curSel.SubElementNames[0][4:])-1
 curSel = Gui.Selection.getSelectionEx()[0]   #curSel.Object is now sketch,
 egmPos = int(curSel.SubElementNames[0][4:])-1
 
-#if it is a pocket
-skt = curSel.Object.Profile[0]
-
 import math
 
 toothSize = 1.8
