@@ -80,6 +80,8 @@ g0 = curSel.Object.Geometry[0]  #g0.Center, g0.Radius
 egmPos = int(curSel.SubElementNames[0][4:])-1
 
 
+
+------------------------- Start --------------------
 curSel = Gui.Selection.getSelectionEx()[0]   #curSel.Object is now sketch,
 egmPos = int(curSel.SubElementNames[0][4:])-1
 
