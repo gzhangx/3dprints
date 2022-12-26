@@ -8,7 +8,7 @@
 #     makeScrewHole(s+'.'+e)
 
 #fullName: Sketch006.Edge1
-def makeScrewHole(fullName):
+def makeScrewHole(fullName, bodyName = 'Body'):
     import math
     
     toothSize = 1.8
@@ -17,7 +17,7 @@ def makeScrewHole(fullName):
 
     nameParts = fullName.split('.')    
     sketchName = nameParts[0]
-    body = App.ActiveDocument.Body
+    body = App.ActiveDocument.getObject(bodyName)
 
     curSketch = body.getObject(sketchName)
     egmPos = int(nameParts[1][4:])-1
