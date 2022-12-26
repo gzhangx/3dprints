@@ -81,7 +81,7 @@ egmPos = int(curSel.SubElementNames[0][4:])-1
 
 
 
-------------------------- Start --------------------
+#------------------------- Start --------------------
 curSel = Gui.Selection.getSelectionEx()[0]   #curSel.Object is now sketch,
 egmPos = int(curSel.SubElementNames[0][4:])-1
 
@@ -89,7 +89,7 @@ import math
 
 toothSize = 1.8
 helixPitch = toothSize + 0.1
-helixDepth = 5
+helixDepth = 6
 
 body = App.ActiveDocument.Body
 #get selection
@@ -131,5 +131,5 @@ helix.Height = helixDepth
 helix.Angle = 0
 helix.Growth = 0
 helix.LeftHanded = 0
-helix.Reversed = 0
+helix.Reversed = 1
 App.ActiveDocument.recompute()
