@@ -1,0 +1,18 @@
+sketches = ['Sketch005', 'Sketch006']
+edges = ['Edge1', 'Edge2']
+for s in sketches:
+  for e in edges:
+    makeScrewHole(s+'.'+e)
+
+
+Gui.SendMsgToActiveView("Save")
+App.getDocument("glassJoint40").save()
+
+__objs__=[]
+__objs__.append(FreeCAD.getDocument("glassJoint40").getObject("SubtractiveHelix003"))
+import Mesh
+Mesh.export(__objs__,u"D:/temp/gcodes/glassJoint40.stl")
+
+del __objs__
+
+
