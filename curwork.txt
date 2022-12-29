@@ -16,3 +16,8 @@ Mesh.export(__objs__,u"D:/temp/gcodes/glassJoint40.stl")
 del __objs__
 
 
+
+
+to pass from 10x5 bearing: , 5.03
+pully teetch dist: 3mm
+bearing outside: 7.56
