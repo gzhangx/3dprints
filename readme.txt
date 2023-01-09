@@ -4,6 +4,7 @@ stl to cad:
 3. create a copy->refine shape
 
 
+screw 2 fixs threaded screw hole 2.5
 
 module:  pi/gear teeth dist
 
