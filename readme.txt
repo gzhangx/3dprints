@@ -20,7 +20,7 @@ center: 7.84
 
 
 hexsocket female: 4.965
-hexSocketMale: 4.84
+hexSocketMale: 4.84 (to 4.92 still a bit lose)
 
 m3 passthrough r: 1.6mm
 m3 tight: r 1.4mm
