@@ -24,3 +24,6 @@ hexSocketMale: 4.84 (to 4.92 still a bit lose, 4.94 is slight tight)
 
 m3 passthrough r: 1.6mm
 m3 tight: r 1.4mm
+
+
+mk3s+ Z offset: -1.4 (2023-01-26)
