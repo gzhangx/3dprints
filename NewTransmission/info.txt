@@ -1,0 +1,6 @@
+to pass from 10x5 bearing: , 5.03
+pully teetch dist: 3mm
+bearing outside: 7.56
+
+m3 screw tight hole: 1.4mm
+m3 screw passthrough hole: 1.5mm
