@@ -6,6 +6,8 @@ m3 screw tight hole: 1.4mm
 m3 screw passthrough hole: 1.5mm
 
 
-2 holes on top of front axile dist: 5mm
+2 holes on top of front axile dist: 5mm, bottom hole to x: 2mm, x to bottom: 32mm
+ 
+center axile housing: 27.75, to side: 5, between: 5
 
 2 holes vertical on rear axile connector: 6mm
