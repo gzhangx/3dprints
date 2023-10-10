@@ -28,3 +28,8 @@ m3 tight: r 1.4mm
 
 mk3s+ Z offset: -1.4 (2023-01-26)
 mk3s+ Z offset: -1.45 (2023-01-27) smooth back. -1.7 is way over
+
+
+BEARING raidus (grove to fit the bearing): 7.56mm
+bearing holder radius (bearing stop): 6.06mm 
+bearing hole depth (to hold bearing) : 4mm
