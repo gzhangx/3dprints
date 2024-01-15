@@ -1,0 +1,43 @@
+to pass from 10x5 bearing: , 5.03
+pully teetch dist: 3mm
+bearing outside: 7.56
+
+pully total width: 10
+border: 0.5, decline: 1.25
+center: 7.84
+
+16 tpi
+
+5/32 inch
+
+
+
+https://jupyter.org/try-jupyter/lab/
+
+
+
+from matplotlib import pyplot as plt
+import numpy as np
+import pandas as pd
+import sys
+import sys
+#!{sys.executable} -m pip install seaborn
+import sklearn
+
+import piplite
+await piplite.install('numpy')
+await piplite.install('pandas')
+await piplite.install('matplotlib')
+await piplite.install('seaborn')
+import seaborn as sns;
+sns.set(font_scale=1.2)
+
+pd.read_csv('test1.csv')
+# Generate 100 random data points along 3 dimensions
+x, y, scale = np.random.randn(3, 100)
+fig, ax = plt.subplots()
+
+# Map each onto a scatterplot we'll create with Matplotlib
+ax.scatter(x=x, y=y, c=scale, s=np.abs(scale)*500)
+ax.set(title="csv data")
+plt.show()
