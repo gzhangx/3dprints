@@ -76,18 +76,14 @@ class _HTTPRequest:
             request_text = ''
             first_line = raw_request.readline().decode('utf-8')
             request_text = request_text+first_line
-            print("first line="+first_line)
             contentLen = 0
             while True:
                line = raw_request.readline()               
                if not line or line == b'\r\n':
-                   print("end of request")
                    break
                strLine = line.decode('utf-8')
                if strLine.lower().startswith('content-length:'):
-                   print("got linexxx="+strLine)
                    contentLen = int(strLine[len('Content-Length:'):])
-                   print("got size="+str(contentLen))
                    
                #print("got line="+strLine)
                request_text+=strLine
@@ -95,10 +91,8 @@ class _HTTPRequest:
             bodydata = ''   
             stillNeedToRead = contentLen   
             if contentLen > 0:
-                print("reading body")
                 while True:
                     line = raw_request.recv(stillNeedToRead)
-                    print("read len "+ len(line))
                     if not line or len(line) == 0:
                         break
                     bodydata += line.decode('utf-8')
