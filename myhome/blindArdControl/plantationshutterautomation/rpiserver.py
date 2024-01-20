@@ -43,18 +43,15 @@ def svg(request):
 
 @server.route("/update", method="POST")
 def update(request):
-    print("rquest data " + request.request_data)
+    print("dbgrm rquest data " + request.request_data)
     ur = json.loads(request.request_data)
     pin = Pin(ur['id'], Pin.IN if ur[
         'inout'] == 'IN' else Pin.OUT)
         
     if ur['id'] == 'LED' or ur['inout'] == 'OUT':
-        print("updating " + ur['id'])
-        if ur['value']:
-            print("updating to on " + str(ur['value']))
+        if ur['value']:            
             pin.on()
-        else:
-            print("updating to off "+ str(ur['value']))
+        else:            
             pin.off()
 
     return HTTPResponse(body="done")
