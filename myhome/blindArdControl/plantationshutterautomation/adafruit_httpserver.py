@@ -19,6 +19,9 @@ Implementation Notes
 * Adafruit CircuitPython firmware for the supported boards:
   https://github.com/adafruit/circuitpython/releases
 """
+ECONNRESET = 104
+EBADF= 9
+EAGAIN= 'I DONT KNOW THIS NUM'
 
 try:
     from typing import Any, Callable, Optional
@@ -77,7 +80,7 @@ class _HTTPRequest:
                line = raw_request.readline()               
                if not line or line == b'\r\n':
                    break
-               strLine = line.decode('utf-8')
+               strLine = line.decode('utf-8')               
                if strLine.lower().startswith('content-length:'):
                    contentLen = int(strLine[len('Content-Length:'):])
                    
@@ -215,9 +218,18 @@ class HTTPResponse:
                 self.status, MIMEType.mime_type(filename), file_length
             ),
         )
+        print("open file " + filename)
         with open(root + filename, "rb") as file:
             while bytes_read := file.read(2048):
-                self._send_bytes(conn, bytes_read)
+                if bytes_read == None:
+                    print("null bytes read")
+                    break;
+                if len(bytes_read) <=0:
+                    print("bytes read <=0")
+                    break;
+                if self._send_bytes(conn, bytes_read) != True:
+                    break
+        print("done open file " + filename)
 
     def _send_bytes(self, conn, buf):  # pylint: disable=no-self-use
         bytes_sent = 0
@@ -227,10 +239,15 @@ class HTTPResponse:
             try:
                 bytes_sent += conn.send(view[bytes_sent:])
             except OSError as exc:
-                if exc.errno == EAGAIN:
-                    continue
+                print("got error " + str(exc.errno)+" " + str(exc))
                 if exc.errno == ECONNRESET:
-                    return
+                    return False
+                if exc.errno == EBADF:
+                    return False
+                if exc.errno == EAGAIN:
+                    return False
+                return False
+        return True
 
 class HTTPServer:
     """A basic socket-based HTTP server."""
@@ -313,9 +330,9 @@ class HTTPServer:
         the application callable will be invoked.
         """
         try:
-            conn, _ = self._sock.accept()            
+            conn, _ = self._sock.accept()
             try:
-                cl_file = conn.makefile('rwb', 0)            
+                cl_file = conn.makefile('rwb', 0)
 
                 request = _HTTPRequest(raw_request=cl_file)
 

@@ -31,7 +31,6 @@
     </tr>
     <tr>
         <td><table id="leftiotable"></table></td>
-        <td><img id="picopinout" src="pico.svg"></img></td>
         <td><table id="rightiotable"></table></td>
     </tr>
 
@@ -81,30 +80,47 @@
         row.appendChild(tdlabel);
 
         if (pin.is_gpio) {
-            var inoutselect = document.createElement("select");
-            ["In", "Out"].forEach((name, i) => {
-                var opt = document.createElement("option");
-                opt.value = name;
-                opt.innerHTML = name;
-                inoutselect.appendChild(opt);
-            });
-            inoutselect.id = pin.id + "_inout";
-            inoutselect.onchange = () => {pinChanged(pin.id);}
-            var tdinoutselect = document.createElement("td");
-            tdinoutselect.appendChild(inoutselect);
-            row.appendChild(tdinoutselect);
+            
+            
+            if (pin.input === 'PWM') {
+                var cb = document.createElement("input");
+                cb.type = "text";
+                cb.name= pin.id;
+                cb.id = pin.id;
+                cb.value = '100000';
+                cb.disabled = false;
+                cb.onchange =() => {pinChanged(pin.id);}
 
-            var cb = document.createElement("input");
-            cb.type = "checkbox";
-            cb.name= pin.id;
-            cb.id = pin.id;
-            cb.value = true;
-            cb.disabled = true;
-            cb.onchange =() => {pinChanged(pin.id);}
+                var tdcb = document.createElement("td");
+              tdcb.appendChild(cb);
+              row.appendChild(tdcb);
+            } else {
+                var inoutselect = document.createElement("select");
+                ["In", "Out"].forEach((name, i) => {
+                    var opt = document.createElement("option");
+                    opt.value = name;
+                    opt.innerHTML = name;
+                    inoutselect.appendChild(opt);
+                });
+                inoutselect.id = pin.id + "_inout";
+                inoutselect.onchange = () => {pinChanged(pin.id);}
+                var tdinoutselect = document.createElement("td");
+                tdinoutselect.appendChild(inoutselect);
+                row.appendChild(tdinoutselect);
 
-            var tdcb = document.createElement("td");
-            tdcb.appendChild(cb);
-            row.appendChild(tdcb);
+                var cb = document.createElement("input");
+                cb.type = "checkbox";
+                cb.name= pin.id;
+                cb.id = pin.id;
+                cb.value = true;
+                cb.disabled = true;
+                cb.onchange =() => {pinChanged(pin.id);}
+
+                var tdcb = document.createElement("td");
+              tdcb.appendChild(cb);
+              row.appendChild(tdcb);
+            }
+            
         } else {
             row.appendChild(document.createElement("td"));
             row.appendChild(document.createElement("td"));

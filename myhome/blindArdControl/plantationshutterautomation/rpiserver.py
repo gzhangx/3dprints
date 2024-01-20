@@ -4,8 +4,20 @@
 #import digitalio
 import json
 import time
-from machine import Pin, Timer
+from machine import Pin, Timer, PWM
+import utime
 
+MID=1500000
+MIN=1000000
+MAX=2000000
+
+pwm = PWM(Pin(15))
+pwm.freq(50)
+pwm.duty_ns(MID)
+
+pwmPins = {
+    "GP15":True,
+    }
 from adafruit_httpserver import HTTPServer, HTTPResponse
 
 #from secrets import secrets
@@ -61,12 +73,15 @@ def update(request):
 def pinstates(request):
     states = {}
     for pinID, pin in pins.items():
-        states[pinID] = {
+        pinStat = {
             "id": pinID,
             "inout":
             'In' ,
             "value": pin.value(),
         }
+        if pwmPins[pinID]:
+            pinState.input = 'PWM'
+        states[pinID] = pinStat
     return HTTPResponse(content_type="application/json",
                         body=json.dumps(states))
 
