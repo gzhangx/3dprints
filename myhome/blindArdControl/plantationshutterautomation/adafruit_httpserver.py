@@ -26,12 +26,10 @@ except ImportError:
     print("import type error")
     pass
 
-print("here")
 #from errno import EAGAIN, ECONNRESET
 import os
 
 import socket
-print("here")
 __version__ = "0.0.0+auto.0"
 __repo__ = "https://github.com/adafruit/Adafruit_CircuitPython_HTTPServer.git"
 
@@ -54,14 +52,12 @@ class HTTPStatus:  # pylint: disable=too-few-public-methods
     def __str__(self):
         return f"{self.value} {self.phrase}"
 
-print("here")
 HTTPStatus.NOT_FOUND = HTTPStatus(404, "Not Found")
 """404 Not Found"""
 HTTPStatus.OK = HTTPStatus(200, "OK")  # pylint: disable=invalid-name
 """200 OK"""
 HTTPStatus.INTERNAL_SERVER_ERROR = HTTPStatus(500, "Internal Server Error")
 """500 Internal Server Error"""
-print("here 1")
 
 class _HTTPRequest:
     def __init__(
@@ -120,7 +116,6 @@ class _HTTPRequest:
     def __repr__(self) -> str:
         return f"_HTTPRequest(path={repr(self.path)}, method={repr(self.method)})"
 
-print("here 1")
 class MIMEType:
     """Common MIME types.
     From https://developer.mozilla.org/en-US/docs/Web/HTTP/Basics_of_HTTP/MIME_types/Common_types
@@ -151,7 +146,6 @@ class MIMEType:
         """Return the mime type for the given filename. If not known, return "text/plain"."""
         return MIMEType._MIME_TYPES.get(filename.split(".")[-1], MIMEType.TEXT_PLAIN)
 
-print("here rs")
 class HTTPResponse:
     """Details of an HTTP response. Use in `HTTPServer.route` decorator functions."""
 
@@ -238,7 +232,6 @@ class HTTPResponse:
                 if exc.errno == ECONNRESET:
                     return
 
-print("here srv")
 class HTTPServer:
     """A basic socket-based HTTP server."""
 
@@ -320,9 +313,7 @@ class HTTPServer:
         the application callable will be invoked.
         """
         try:
-            print("dbgrm polling")
-            conn, _ = self._sock.accept()
-            print("dbgrm polling got conn")
+            conn, _ = self._sock.accept()            
             try:
                 cl_file = conn.makefile('rwb', 0)            
 
@@ -376,4 +367,3 @@ class HTTPServer:
     def request_buffer_size(self, value: int) -> None:
         self._buffer = bytearray(value)
 
-print("here after a")
