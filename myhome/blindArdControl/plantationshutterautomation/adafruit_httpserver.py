@@ -320,21 +320,18 @@ class HTTPServer:
         the application callable will be invoked.
         """
         try:
-            print("polling")
+            print("dbgrm polling")
             conn, _ = self._sock.accept()
-            print("polling got conn")
+            print("dbgrm polling got conn")
             try:
-                print("polling in with conn conn")
-                cl_file = conn.makefile('rwb', 0)
-                print("after recvfrom_into")
+                cl_file = conn.makefile('rwb', 0)            
 
                 request = _HTTPRequest(raw_request=cl_file)
 
-                print("after request, before routes")
                 # If a route exists for this request, call it. Otherwise try to serve a file.
                 route = self.routes.get(request, None)
                 if route:
-                    print("found route")
+                    print("dbgrm found route")
                     response = route(request)
                 elif request.method == "GET":
                     print("not found route with get")

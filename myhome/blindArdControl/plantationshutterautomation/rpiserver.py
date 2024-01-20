@@ -47,13 +47,9 @@ def update(request):
     ur = json.loads(request.request_data)
     pin = Pin(ur['id'], Pin.IN if ur[
         'inout'] == 'IN' else Pin.OUT)
-    
-    if ur['inout'] == 'OUT':
-        print("set value " + str(ur['value']))
-        pin.value = ur['value']
         
-    if ur['id'] == 'LED':
-        print("updating led")
+    if ur['id'] == 'LED' or ur['inout'] == 'OUT':
+        print("updating " + ur['id'])
         if ur['value']:
             print("updating to on " + str(ur['value']))
             pin.on()
