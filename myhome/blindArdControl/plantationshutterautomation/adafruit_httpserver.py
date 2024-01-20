@@ -218,7 +218,7 @@ class HTTPResponse:
                 self.status, MIMEType.mime_type(filename), file_length
             ),
         )
-        print("open file " + filename)
+        
         with open(root + filename, "rb") as file:
             while bytes_read := file.read(2048):
                 if bytes_read == None:
@@ -229,7 +229,7 @@ class HTTPResponse:
                     break;
                 if self._send_bytes(conn, bytes_read) != True:
                     break
-        print("done open file " + filename)
+        
 
     def _send_bytes(self, conn, buf):  # pylint: disable=no-self-use
         bytes_sent = 0
