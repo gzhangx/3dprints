@@ -96,7 +96,7 @@
               row.appendChild(tdcb);
             } else {
                 var inoutselect = document.createElement("select");
-                ["In", "Out"].forEach((name, i) => {
+                ["In", "Out", "PWM"].forEach((name, i) => {
                     var opt = document.createElement("option");
                     opt.value = name;
                     opt.innerHTML = name;
