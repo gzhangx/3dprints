@@ -101,12 +101,14 @@ class _HTTPRequest:
                 
             self.request_data = bodydata
             #print("request_text"+request_text)
+            self.method = '';
+            self.path = '';
             try:
                 (self.method, self.path, _httpversion) = first_line.split()
                 print("method "+self.method+" path="+self.path)
             except ValueError as exc:
-                print("not parsable req")
-                raise ValueError("Unparseable raw_request: ", raw_request) from exc
+                print("not parsable req", exc,first_line)
+                #raise ValueError("Unparseable raw_request: ", raw_request) from exc
 
             
 

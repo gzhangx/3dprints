@@ -50,6 +50,7 @@
         console.log("pin changed: " + pinID)
 
         var checkbox = document.getElementById(pinID);
+        var deg = document.getElementById(pinID+"_deg");
         var inoutsel = document.getElementById(pinID + "_inout");
 
         let inout = pinID == 'LED' ? 'Out' : inoutsel.value;
@@ -62,10 +63,12 @@
             id: pinID,
             value: checkbox.checked,
             inout: inout,
+            deg: deg.value,
         }));
         // TODO: handle errors
 
         checkbox.disabled = inout == "In";
+        deg.disabled = inout != 'PWM';
         if (inout == "In") {
             checkbox.checked = false;
         }
@@ -79,22 +82,27 @@
         tdlabel.innerHTML = pin.id;
         row.appendChild(tdlabel);
 
+
+function addElementToRow(id, postId, eleType='input') {
+
+  var deg = document.createElement(eleType);
+                //deg.type = "text";
+                let custId = id+(postId || '');
+                deg.name= custId;
+                deg.id = custId;
+                //deg.value = true;
+                deg.disabled = true;
+                deg.onchange =() => {pinChanged(id);}
+
+                var td = document.createElement("td");
+              td.appendChild(deg);
+              row.appendChild(td);
+              return deg;
+}
         if (pin.is_gpio) {
             
             
-            if (pin.input === 'PWM') {
-                var cb = document.createElement("input");
-                cb.type = "text";
-                cb.name= pin.id;
-                cb.id = pin.id;
-                cb.value = '100000';
-                cb.disabled = false;
-                cb.onchange =() => {pinChanged(pin.id);}
-
-                var tdcb = document.createElement("td");
-              tdcb.appendChild(cb);
-              row.appendChild(tdcb);
-            } else {
+             {
                 var inoutselect = document.createElement("select");
                 ["In", "Out", "PWM"].forEach((name, i) => {
                     var opt = document.createElement("option");
@@ -108,20 +116,21 @@
                 tdinoutselect.appendChild(inoutselect);
                 row.appendChild(tdinoutselect);
 
-                var cb = document.createElement("input");
-                cb.type = "checkbox";
-                cb.name= pin.id;
-                cb.id = pin.id;
-                cb.value = true;
-                cb.disabled = true;
-                cb.onchange =() => {pinChanged(pin.id);}
 
-                var tdcb = document.createElement("td");
-              tdcb.appendChild(cb);
-              row.appendChild(tdcb);
+                var deg = addElementToRow(pin.id, "_deg", "input");
+                deg.type = "text";
+                deg.value= "0";
+              
+                var cb = addElementToRow(pin.id, "","input");
+                cb.type = "checkbox";                
+                cb.value = true;
+                cb.disabled = true;                
+
+                                          
             }
             
         } else {
+            row.appendChild(document.createElement("td"));
             row.appendChild(document.createElement("td"));
             row.appendChild(document.createElement("td"));
         }
