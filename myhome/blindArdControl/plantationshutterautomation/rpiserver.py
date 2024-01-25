@@ -11,12 +11,15 @@ MID=1500000
 MIN=0500000
 MAX=2000000
 
-pwm = PWM(Pin(15))
-pwm.freq(50)
-pwm.duty_ns(MIN)
+def makePwm(pin):
+    pwm = PWM(Pin(pin))
+    pwm.freq(50)
+    pwm.duty_ns(0)
+    return pwm
 
 pwmPins = {
-    "GP15":True,
+    "GP15":makePwm(15),
+    "GP14":makePwm(14),
     }
 from adafruit_httpserver import HTTPServer, HTTPResponse
 
@@ -57,10 +60,25 @@ def svg(request):
 def update(request):
     print("dbgrm rquest data " + request.request_data)
     ur = json.loads(request.request_data)
+    
+    if ur["type"] == "PWM":
+        try:
+            deg = int(ur["deg"])
+            if deg < 0:
+                deg = 0
+            if deg > 100:
+                deg = 100
+            deg = int(deg*(MAX-MIN)/100 + MIN)
+            print("using deg " + str(deg))
+            pwmPins[ur["id"]].duty_ns(deg)
+        except Exception as e:
+            print(e)
+        return HTTPResponse(body="done")
+    
     pin = Pin(ur['id'], Pin.IN if ur[
         'inout'] == 'IN' else Pin.OUT)
         
-    if ur['id'] == 'LED' or ur['inout'] == 'OUT':
+    if ur['id'] == 'LED' or ur['inout'] == 'OUT' and ur["type"] != "PWM":
         if ur['value']:            
             pin.on()
         else:            

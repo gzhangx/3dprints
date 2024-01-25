@@ -12,7 +12,7 @@ def tick(timer):
     global led
     led.toggle()
 
-tim.init(freq=2.5, mode=Timer.PERIODIC, callback=tick)
+tim.init(period=2000, mode=Timer.PERIODIC, callback=tick)
 
 
 def ap_mode(ssid, password):

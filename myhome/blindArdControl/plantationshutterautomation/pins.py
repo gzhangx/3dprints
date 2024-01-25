@@ -23,7 +23,7 @@ PinInfo = [
     {"id": "GP13", "is_gpio": True},
     {"id": "GND", "is_gpio": False},
     {"id": "GP14", "is_gpio": True},
-    {"id": "GP15", "is_gpio": True},
+    {"id": "GP15", "is_gpio": True, "type":"PWM"},
 
     # right side of board in bottom-up order
     {"id": "GP16", "is_gpio": True},

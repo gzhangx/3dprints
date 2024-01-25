@@ -46,7 +46,7 @@
     const base_addr = 'http://' + window.location.host;
 
     // callback for when a pin's info is changed in the UI
-    function pinChanged(pinID) {
+    function pinChanged(pinID, pin) {
         console.log("pin changed: " + pinID)
 
         var checkbox = document.getElementById(pinID);
@@ -63,6 +63,7 @@
             id: pinID,
             value: checkbox.checked,
             inout: inout,
+            type: pin.type,
             deg: deg.value,
         }));
         // TODO: handle errors
@@ -83,52 +84,45 @@
         row.appendChild(tdlabel);
 
 
-function addElementToRow(id, postId, eleType='input') {
-
-  var deg = document.createElement(eleType);
-                //deg.type = "text";
-                let custId = id+(postId || '');
-                deg.name= custId;
-                deg.id = custId;
-                //deg.value = true;
-                deg.disabled = true;
-                deg.onchange =() => {pinChanged(id);}
-
-                var td = document.createElement("td");
-              td.appendChild(deg);
-              row.appendChild(td);
-              return deg;
-}
+        function addElementToRow(pin, postId, eleType='input', addOnChange=true) {
+            const id= pin.id;
+            var deg = document.createElement(eleType);
+            let custId = id+(postId || '');
+            deg.name= custId;
+            deg.id = custId;
+            if (addOnChange)
+                deg.onchange =() => {pinChanged(id, pin);}
+            var td = document.createElement("td");
+            td.appendChild(deg);
+            row.appendChild(td);
+            return deg;
+        }
         if (pin.is_gpio) {
+            var inoutselect = addElementToRow(pin, "_inout", "select");
+            //document.createElement("select");
+            ["In", "Out", "PWM"].forEach((name, i) => {
+                var opt = document.createElement("option");
+                opt.value = name;
+                opt.innerHTML = name;
+                inoutselect.appendChild(opt);
+            });            
+
+            var deg = addElementToRow(pin, "_deg", "input");
+            deg.type = "text";
+            deg.value= "0";
             
+            var ptype = addElementToRow(pin, "_type", "input", false);
+            ptype.type = "text";
+            ptype.value= pin.type || "NONE";
             
-             {
-                var inoutselect = document.createElement("select");
-                ["In", "Out", "PWM"].forEach((name, i) => {
-                    var opt = document.createElement("option");
-                    opt.value = name;
-                    opt.innerHTML = name;
-                    inoutselect.appendChild(opt);
-                });
-                inoutselect.id = pin.id + "_inout";
-                inoutselect.onchange = () => {pinChanged(pin.id);}
-                var tdinoutselect = document.createElement("td");
-                tdinoutselect.appendChild(inoutselect);
-                row.appendChild(tdinoutselect);
-
-
-                var deg = addElementToRow(pin.id, "_deg", "input");
-                deg.type = "text";
-                deg.value= "0";
-              
-                var cb = addElementToRow(pin.id, "","input");
-                cb.type = "checkbox";                
-                cb.value = true;
-                cb.disabled = true;                
-
-                                          
+            var cb = addElementToRow(pin, "","input");
+            cb.type = "checkbox";
+            cb.value = true;
+            cb.disabled = true; 
+            if (pin.type === 'PWM') {
+                inoutselect.selectedIndex = 2;
+                inoutselect.disabled = true;
             }
-            
         } else {
             row.appendChild(document.createElement("td"));
             row.appendChild(document.createElement("td"));
