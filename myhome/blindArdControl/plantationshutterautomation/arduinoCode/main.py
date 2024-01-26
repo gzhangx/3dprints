@@ -2,10 +2,16 @@ from machine import Pin, Timer
 import network
 import socket
 import time
-from rpiserver import server
+import rpiserver
 import ujson
+import json
+import ggsettings
 
+import urequests;
 
+ggsettings.init()
+
+baseUrl ='http://192.168.2.146:18082'
 led = Pin("LED", Pin.OUT)
 tim = Timer()
 def tick(timer):
@@ -41,12 +47,40 @@ def connect_mode(ssid, password):
         print('Waiting for connection...')
         time.sleep(5)
     print(wlan.ifconfig())
+    return wlan.ifconfig()
 
+ifCfg = None
+name = None
 with open('secrets.json') as sec_file:
     data = ujson.load(sec_file)
+    name = data["name"]
     print(data,data['ssid'],data['password'])
-    connect_mode(data['ssid'],data['password'])
+    ifCfg = connect_mode(data['ssid'],data['password'])
 #ap_mode("PicoW", "123456789")
 
+ggsettings.name = name
+print("ifCfg", ifCfg)
+ipAddress = ifCfg[0]
+print(ipAddress,'if0')
+ggsettings.ipAddress = ipAddress
+rpiserver.copyControls()
+
+print("sending name ",name)
+reqbody=json.dumps({"ip":ggsettings.ipAddress,"name":ggsettings.name,
+                    "controls":ggsettings.controls})
+print("reqbody",reqbody)
+urequests.post(url=baseUrl+'/registerBlinds', headers = {'content-type': 'application/json'},data=reqbody)
+
+for i in range(1):
+    url = baseUrl+'/getBlinds?ip='+ipAddress+"&id="+str(i)
+    print("request " ,i)
+    res = urequests.get(url)
+
+    print(res.text,"text")
+    jdata = json.loads(res.text)
+    print(i, jdata, jdata['some'])
+    res.close()
+
+
 #ap_mode('ggssid','123456789')
-server.serve_forever()
+#rpiserver.server.serve_forever()

@@ -6,6 +6,7 @@ import json
 import time
 from machine import Pin, Timer, PWM
 import utime
+import ggsettings
 
 MID=1500000
 MIN=0500000
@@ -26,6 +27,10 @@ from adafruit_httpserver import HTTPServer, HTTPResponse
 #from secrets import secrets
 from pins import PinInfo
 
+
+def copyControls():
+    ggsettings.controls = list(pwmPins.keys())
+    
 # init all gpio pins to INPUT state and store in a dict mapped by id
 pins = {}
 
