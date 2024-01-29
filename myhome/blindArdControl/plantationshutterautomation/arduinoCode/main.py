@@ -11,14 +11,19 @@ import urequests;
 
 ggsettings.init()
 
-baseUrl ='http://192.168.2.146:18082'
+DOWIFI = False
+
+baseUrl ='http://192.168.2.147:18082'
 led = Pin("LED", Pin.OUT)
 tim = Timer()
 def tick(timer):
     global led
     led.toggle()
 
-tim.init(period=2000, mode=Timer.PERIODIC, callback=tick)
+led.off()
+def ledFlash(period):
+    print("period " + str(period))
+    #tim.init(period=period, mode=Timer.PERIODIC, callback=tick)
 
 
 def ap_mode(ssid, password):
@@ -51,36 +56,49 @@ def connect_mode(ssid, password):
 
 ifCfg = None
 name = None
-with open('secrets.json') as sec_file:
-    data = ujson.load(sec_file)
-    name = data["name"]
-    print(data,data['ssid'],data['password'])
-    ifCfg = connect_mode(data['ssid'],data['password'])
+ledFlash(500)
+
+if DOWIFI:
+    with open('secrets.json') as sec_file:
+        data = ujson.load(sec_file)
+        name = data["name"]
+        print(data,data['ssid'],data['password'])
+        ifCfg = connect_mode(data['ssid'],data['password'])
 #ap_mode("PicoW", "123456789")
 
-ggsettings.name = name
-print("ifCfg", ifCfg)
-ipAddress = ifCfg[0]
-print(ipAddress,'if0')
-ggsettings.ipAddress = ipAddress
-rpiserver.copyControls()
+if DOWIFI:
+    ggsettings.name = name
+    print("ifCfg", ifCfg)
+    ipAddress = ifCfg[0]
+    print(ipAddress,'if0')
+    ggsettings.ipAddress = ipAddress
+    rpiserver.copyControls()
 
-print("sending name ",name)
-reqbody=json.dumps({"ip":ggsettings.ipAddress,"name":ggsettings.name,
-                    "controls":ggsettings.controls})
-print("reqbody",reqbody)
-urequests.post(url=baseUrl+'/registerBlinds', headers = {'content-type': 'application/json'},data=reqbody)
+    print("sending name ",name)
+    reqbody=json.dumps({"ip":ggsettings.ipAddress,"name":ggsettings.name,
+                        "controls":ggsettings.controls})
+    print("reqbody",reqbody)
+    ledFlash(50)
+    while True:
+        try:
+            urequests.post(url=baseUrl+'/registerBlinds', headers = {'content-type': 'application/json'},data=reqbody)
+            break
+        except:
+            ledFlash(1000)
+            continue
 
-for i in range(1):
-    url = baseUrl+'/getBlinds?ip='+ipAddress+"&id="+str(i)
-    print("request " ,i)
-    res = urequests.get(url)
+    ledFlash(500)
+    for i in range(1):
+        url = baseUrl+'/getBlinds?ip='+ipAddress+"&id="+str(i)
+        print("request " ,i)
+        #res = urequests.get(url)
 
-    print(res.text,"text")
-    jdata = json.loads(res.text)
-    print(i, jdata, jdata['some'])
-    res.close()
+        #print(res.text,"text")
+        #jdata = json.loads(res.text)
+        #print(i, jdata) #jdata['some']
+        #res.close()
 
 
 #ap_mode('ggssid','123456789')
-#rpiserver.server.serve_forever()
+if DOWIFI:
+    rpiserver.server.serve_forever()

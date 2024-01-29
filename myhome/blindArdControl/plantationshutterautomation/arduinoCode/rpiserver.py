@@ -19,8 +19,8 @@ def makePwm(pin):
     return pwm
 
 pwmPins = {
-    "GP15":makePwm(15),
-    "GP14":makePwm(14),
+    #"GP15":makePwm(15),
+    #"GP14":makePwm(14),
     }
 from adafruit_httpserver import HTTPServer, HTTPResponse
 
