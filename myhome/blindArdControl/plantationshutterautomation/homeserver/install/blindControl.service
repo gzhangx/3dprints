@@ -5,8 +5,8 @@ After=network.target
 #log with journalctl -u blindControl.service
 [Service]
 EnvironmentFile=/home/pi/creds/pienv.txt
-ExecStart=/usr/bin/node /home/pi/plantationshutterautomation/homeserver/index.js 
-WorkingDirectory=/home/pi/plantationshutterautomation/homeserver
+ExecStart=/usr/bin/node /home/pi/3dprints/myhome/blindArdControl/plantationshutterautomation/homeserver/index.js 
+WorkingDirectory=/home/pi/3dprints/myhome/blindArdControl/plantationshutterautomation/homeserver
 StandardOutput=inherit
 StandardError=inherit
 Restart=always
