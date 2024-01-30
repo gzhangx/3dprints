@@ -29,9 +29,14 @@ function registerBlinds(req, res) {
     
     console.log('server post data', body);
 
-    const existing = loadData();
-    existing[name] = body;
-    fs.writeFileSync(blindsInfoJson, JSON.stringify(existing));
+    const allData = loadData();
+    const thisControl = allData[name] || {};
+    thisControl.name = name;
+    thisControl.ip = ip;
+    thisControl.controls = controls;
+    thisControl.updateTime = new Date().toISOString();
+    allData[name] = thisControl;
+    fs.writeFileSync(blindsInfoJson, JSON.stringify(allData));
     res.json({ msg: 'Hello from blind!' });
 }
 

@@ -23,11 +23,11 @@ ECONNRESET = 104
 EBADF= 9
 EAGAIN= 'I DONT KNOW THIS NUM'
 
-try:
-    from typing import Any, Callable, Optional
-except ImportError:
-    print("import type error")
-    pass
+#try:
+    #from typing import Any, Callable, Optional
+#except ImportError:
+    #print("import type error")
+#    pass
 
 #from errno import EAGAIN, ECONNRESET
 import os

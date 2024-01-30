@@ -1,0 +1,17 @@
+[Unit]
+Description=BlindControlService
+After=network.target
+
+#log with journalctl -u blindControl.service
+[Service]
+EnvironmentFile=/home/pi/creds/pienv.txt
+ExecStart=/usr/bin/node /home/pi/plantationshutterautomation/homeserver/index.js 
+WorkingDirectory=/home/pi/plantationshutterautomation/homeserver
+StandardOutput=inherit
+StandardError=inherit
+Restart=always
+User=pi
+Group=netdev
+
+[Install]
+WantedBy=multi-user.target
