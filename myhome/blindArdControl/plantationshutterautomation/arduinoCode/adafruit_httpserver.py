@@ -159,6 +159,7 @@ class HTTPResponse:
         "Content-Type: {}\r\n"
         "Content-Length: {}\r\n"
         "Connection: close\r\n"
+        "Access-Control-Allow-Origin: *\r\n"
         "\r\n"
     )
 

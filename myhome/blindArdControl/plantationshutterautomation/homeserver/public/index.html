@@ -41,6 +41,26 @@
                     row.innerText = txt;
                     mainEle.appendChild(row);
                 }
+                function addControl(id, pin) {
+                    var row = document.createElement("div");
+                    var txt = document.createElement("input");
+                    txt.type = "input";
+                    txt.value="0";
+                    txt.onchange = ()=>{
+                        var xhr = new XMLHttpRequest();
+                        xhr.open("POST", `http://${pin.ip}/update`, true);
+                        xhr.setRequestHeader('Content-Type', 'application/json');
+                        xhr.send(JSON.stringify({
+                            id,
+                            //value: checkbox.checked,
+                            //inout: inout,
+                            type: 'servo',
+                            deg: txt.value,
+                        }));
+                    };
+                    row.appendChild(txt);
+                    mainEle.appendChild(row);
+                }
                 for(const key of keys) {
                     addText("Key="+key);
                     const pin = pininfo[key];
@@ -48,7 +68,8 @@
                     addText("pin name=" + pin.name);
                     addText("controls=" );
                     for(const ctrl of pin.controls) {
-                        addText("controls"+ctrl);
+                        addText("controls"+ctrl.name+" "+ctrl.ctlType);
+                        if (ctrl.ctlType === 'servo') addControl(ctrl.name, pin);
                     }
                 }
             })            

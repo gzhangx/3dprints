@@ -9,7 +9,7 @@ import utime
 import ggsettings
 
 MID=1500000
-MIN=0500000
+MIN= 500000
 MAX=2000000
 
 def makePwm(pin):
@@ -29,7 +29,7 @@ from pins import PinInfo
 
 
 def copyControls():
-    ggsettings.controls = list(pwmPins.keys())
+    ggsettings.controls = list(map(lambda name:{ "name":name, "ctlType":"servo"},list(pwmPins.keys())))
     
 # init all gpio pins to INPUT state and store in a dict mapped by id
 pins = {}
@@ -60,13 +60,16 @@ def svg(request):
     # (ever), don't re-transfer it on every page load.
     return HTTPResponse(filename="/pico.svg")
 
+@server.route("/update", method="OPTIONS")
+def updateOptions(request):
+    return HTTPResponse(body="done")
 
 @server.route("/update", method="POST")
 def update(request):
     print("dbgrm rquest data " + request.request_data)
     ur = json.loads(request.request_data)
     
-    if ur["type"] == "PWM":
+    if ur["type"] == "servo":
         try:
             deg = int(ur["deg"])
             if deg < 0:
