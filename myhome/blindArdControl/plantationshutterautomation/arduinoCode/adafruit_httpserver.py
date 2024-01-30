@@ -128,6 +128,7 @@ class MIMEType:
 
     TEXT_PLAIN = "text/plain"
 
+    APP_JSON = "application/json"
     _MIME_TYPES = {
         "bin": "application/octet-stream",
         "css": "text/css",
@@ -138,7 +139,7 @@ class MIMEType:
         "ico": "image/vnd.microsoft.icon",        
         "jpeg .jpg": "image/jpeg",
         "js": "text/javascript",
-        "json": "application/json",        
+        "json": APP_JSON,        
         "otf": "font/otf",
         "png": "image/png",
         "pdf": "application/pdf",        
@@ -151,6 +152,8 @@ class MIMEType:
         """Return the mime type for the given filename. If not known, return "text/plain"."""
         return MIMEType._MIME_TYPES.get(filename.split(".")[-1], MIMEType.TEXT_PLAIN)
 
+
+        
 class HTTPResponse:
     """Details of an HTTP response. Use in `HTTPServer.route` decorator functions."""
 
@@ -252,6 +255,8 @@ class HTTPResponse:
                 return False
         return True
 
+
+        
 class HTTPServer:
     """A basic socket-based HTTP server."""
 

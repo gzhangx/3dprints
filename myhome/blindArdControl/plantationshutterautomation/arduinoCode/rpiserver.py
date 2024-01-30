@@ -5,7 +5,6 @@
 import json
 import time
 from machine import Pin, Timer, PWM
-import utime
 import ggsettings
 
 MID=1500000
@@ -22,7 +21,7 @@ pwmPins = {
     "GP15":makePwm(15),
     "GP14":makePwm(14),
     }
-from adafruit_httpserver import HTTPServer, HTTPResponse
+from adafruit_httpserver import HTTPServer, HTTPResponse,MIMEType
 
 #from secrets import secrets
 from pins import PinInfo
@@ -60,9 +59,24 @@ def svg(request):
     # (ever), don't re-transfer it on every page load.
     return HTTPResponse(filename="/pico.svg")
 
+class CoreResponse(HTTPResponse):
+    def _send_response(self, conn, status, content_type, body):
+        self._send_bytes(
+            conn, (
+        "HTTP/1.1 200\r\n"
+        "Content-Type: {}\r\n"
+        "Connection: close\r\n"
+        "Access-Control-Allow-Origin: *\r\n"
+        "Access-Control-Allow-Headers: Content-Type,Content-Length\r\n"
+        "Access-Control-Allow-Methods: GET, POST, OPTIONS\r\n"
+        "\r\n"
+    ).format(MIMEType.APP_JSON)
+        )
+        self._send_bytes(conn, body)
+        
 @server.route("/update", method="OPTIONS")
 def updateOptions(request):
-    return HTTPResponse(body="done")
+    return CoreResponse(body="done")
 
 @server.route("/update", method="POST")
 def update(request):

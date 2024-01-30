@@ -114,13 +114,17 @@ if DOWIFI:
     doFlash(2,1000)
     while True:
         try:
-            urequests.post(url=baseUrl+'/registerBlinds', headers = {'content-type': 'application/json'},data=reqbody)
+            res = urequests.post(url=baseUrl+'/registerBlinds', headers = {'content-type': 'application/json'},data=reqbody)
+            print("reqbody sent")
+            res.close()
             break
         except:
+            print("reqbody error")
             doFlash(3,1500)
             continue
 
     doFlash(3,100)
+    print("get blinds req")
     for i in range(1):
         url = baseUrl+'/getBlinds?ip='+ipAddress+"&id="+str(i)
         print("request " ,i)
