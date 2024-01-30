@@ -14,7 +14,7 @@ ggsettings.init()
 
 DOWIFI = True
 
-baseUrl ='http://192.168.2.150:18082'
+baseUrl ='unknown'
 led = Pin("LED", Pin.OUT)
 tim = Timer()
 ledCounter = 0
@@ -93,7 +93,8 @@ if DOWIFI:
     with open('secrets.json') as sec_file:
         data = ujson.load(sec_file)
         name = data["name"]
-        print(data,data['ssid'],data['password'])
+        baseUrl = data["ccSrv"]
+        print(data,data['ssid'],data['password'],baseUrl)
         doFlash(3,200)
         ifCfg = connect_mode(data['ssid'],data['password'])
         doFlash(3,200)
