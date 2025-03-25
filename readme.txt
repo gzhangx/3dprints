@@ -33,3 +33,7 @@ mk3s+ Z offset: -1.45 (2023-01-27) smooth back. -1.7 is way over
 BEARING raidus (grove to fit the bearing): 7.56mm
 bearing holder radius (bearing stop): 6.06mm 
 bearing hole depth (to hold bearing) : 4mm
+
+
+bearing outer R 7.501mm (fit tight)
+bearing hole R 5.03 (insert into bearing) 5.05 for the insert to inert into a hole
