@@ -34,6 +34,7 @@ volatile unsigned long risingEdgeTime3 = 0;
 volatile unsigned long fallingEdgeTime3 = 0;
 volatile unsigned long pulseWidth3 = 0;
 
+const byte DEBUG_MODE=0;
 void measurePulseWidth2() {
   if (digitalRead(2) == HIGH) {
     // Rising edge detected
@@ -132,7 +133,7 @@ int roundToNearestHundred(int val) {
 
 
 // the loop routine runs over and over again forever:
-const unsigned long PERIOD_MS=1000; //10 or 1
+const unsigned long PERIOD_MS=100; //10 or 1
 int generate_pwm_signal(int duty_cycle, unsigned long current_time_ms) {
     // Ensure duty cycle is within valid range (0 to 100)
     if (duty_cycle < 0) duty_cycle = 0;
@@ -145,10 +146,10 @@ int generate_pwm_signal(int duty_cycle, unsigned long current_time_ms) {
     unsigned long cycle_time = current_time_ms % period_ms;
     
     // Calculate the high time based on duty cycle (in microseconds, since period is 1ms = 1000us)
-    unsigned long high_time_us = (duty_cycle * 1000) / 100;
+    unsigned long high_time_us = (duty_cycle * period_ms) / 100;
     
     // Return 1 (high) if within high time, 0 (low) otherwise
-    return (cycle_time * 1000 < high_time_us) ? 1 : 0;
+    return (cycle_time < high_time_us) ? 1 : 0;
 }
 
 //from 1000->2000 to -100/100
@@ -164,7 +165,7 @@ int generate_pwm_full(int scaledPwm) {
   int remotePwmNoSign = scaledPwm;
   if (scaledPwm < 0) remotePwmNoSign = -scaledPwm;
   int on = generate_pwm_signal(remotePwmNoSign, millis());
-  if (scaledPwm < 0) return -on;
+  //if (scaledPwm < 0) return -on;
   return on;
 }
 
@@ -186,30 +187,34 @@ void control_motors(int x, int y) {
     
     // Left motor
     int leftPWM = generate_pwm_full(left_speed);
-    int leftDIR=(left_speed >= 0) ? HIGH : LOW;
+    int leftDIR=(left_speed >= 0) ? LOW : HIGH;
     digitalWrite(LEFT_DIR_PIN, leftDIR);
     digitalWrite(LEFT_PWM_PIN, leftPWM);
-    if (OLD_LEFT_PWM != leftPWM) {
-      OLD_LEFT_PWM = leftPWM;
-      Serial.println(String("LEFT PWM")+ leftPWM+" left speed "+left_speed+" right speed "+right_speed+" x="+x+" y="+y );;
-    }
-    if (OLD_LEFT_DIR != leftDIR){
-      OLD_LEFT_DIR = leftDIR;
-      Serial.println(String("LEFT DIR")+ leftDIR );
+    if (DEBUG_MODE) {
+      if (OLD_LEFT_PWM != leftPWM) {
+        OLD_LEFT_PWM = leftPWM;
+        Serial.println(String("LEFT PWM ")+ leftPWM+" left speed "+left_speed+" right speed "+right_speed+" x="+x+" y="+y );;
+      }
+      if (OLD_LEFT_DIR != leftDIR){
+        OLD_LEFT_DIR = leftDIR;
+        Serial.println(String("LEFT DIR")+ leftDIR );
+      }
     }
           
     // Right motor
     int rightPWM = generate_pwm_full(right_speed);
-    int rightDIR = (right_speed >= 0) ? HIGH : LOW;
+    int rightDIR = (right_speed >= 0) ? LOW : HIGH;
     digitalWrite(RIGHT_DIR_PIN, rightDIR);
     digitalWrite(RIGHT_PWM_PIN, rightPWM);
-    if (OLD_RIGHT_PWM != rightPWM) {
-      OLD_RIGHT_PWM = rightPWM;
-      Serial.println(String("RIGHT PWM")+ rightPWM );
-    }
-    if (OLD_RIGHT_DIR != rightDIR){
-      OLD_RIGHT_DIR = rightDIR;
-      Serial.println(String("RIGHT DIR")+ rightDIR );
+    if (DEBUG_MODE) {
+      if (OLD_RIGHT_PWM != rightPWM) {
+        OLD_RIGHT_PWM = rightPWM;
+        Serial.println(String("RIGHT PWM ")+ rightPWM +" right_speed="+right_speed);
+      }
+      if (OLD_RIGHT_DIR != rightDIR){
+        OLD_RIGHT_DIR = rightDIR;
+        Serial.println(String("RIGHT DIR")+ rightDIR );
+      }
     }
 }
 
@@ -246,7 +251,8 @@ void loop() {
   }
 
     control_motors(newVals[0], newVals[1]);
-  
+
+  if (DEBUG_MODE){
     for (int i = 0; i < TOTAL_REMOTE_PINS;i++) {      
       if (newVals[i] != curVals[i]) {
         //Serial.println(String("at ")+i+ " " + curVals[i]+" new=" + newVals[i] + " curValsUnscalled="+ newValsUnscalled[i]+ " Unscalled="+ curValsUnscalled[i]);
@@ -254,5 +260,5 @@ void loop() {
         curVals[i] = newVals[i];
       }
     }    
- 
+  } 
 }
