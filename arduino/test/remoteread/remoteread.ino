@@ -73,6 +73,8 @@ void setup() {
 
   digitalWrite(LEFT_DIR_PIN, 0);
   digitalWrite(RIGHT_DIR_PIN, 0);
+  digitalWrite(LEFT_PWM_PIN, 0);
+  digitalWrite(RIGHT_PWM_PIN, 0);
 }
 
 //return 0 means waiting
@@ -108,10 +110,10 @@ byte checkPinPwm(PinInputStatus * ps) {
 }
 
 
-int roundToNearestHundred(int val) {
+int roundToNearestHundred(int val) {    
     // Validate input range
-    if (val <= 1100) {
-        return 1000;
+    if (val < 1100 || val > 2000) { //if no signal
+        return 1500;
     }
     if (val >= 1900) {
         return 2000;
@@ -220,11 +222,9 @@ void control_motors(int x, int y) {
 
 int LED = HIGH;
 unsigned long ledCount = 0;
-int curVals[] = {100, 100};
-int newValsUnscalled[] = {100, 100};
-int curValsUnscalled[] = {100, 100};
-int newVals[] = {100, 100};
-int pulesWidths[] = {0,0};
+int curVals[] = {0, 0};
+int newVals[] = {0, 0};
+int pulesWidths[] = {1500,1500};
 void loop() {
   noInterrupts(); // Temporarily disable interrupts to safely access pulseWidth
   pulesWidths[0] = pulseWidth2;
@@ -241,13 +241,13 @@ void loop() {
   
   
   for (int i = 0; i < TOTAL_REMOTE_PINS; i++) {
-   PinInputStatus *ps = remotePins + i;
-   byte ret = checkPinPwm(ps);
-   if (ret == 1)  {
-      newVals[i] = scalePwm(roundToNearestHundred(ps->diff));
-      newVals[i] = scalePwm(roundToNearestHundred(pulesWidths[i]));      
+   //PinInputStatus *ps = remotePins + i;
+   //byte ret = checkPinPwm(ps);
+   //if (ret == 1)  {
+      //newVals[i] = scalePwm(roundToNearestHundred(ps->diff));      
       //newValsUnscalled[i] = scalePwm(roundToNearestHundred(ps->diff));
-   }
+   //}
+   newVals[i] = scalePwm(roundToNearestHundred(pulesWidths[i]));
   }
 
     control_motors(newVals[0], newVals[1]);
@@ -255,8 +255,7 @@ void loop() {
   if (DEBUG_MODE){
     for (int i = 0; i < TOTAL_REMOTE_PINS;i++) {      
       if (newVals[i] != curVals[i]) {
-        //Serial.println(String("at ")+i+ " " + curVals[i]+" new=" + newVals[i] + " curValsUnscalled="+ newValsUnscalled[i]+ " Unscalled="+ curValsUnscalled[i]);
-        curValsUnscalled[i] = newValsUnscalled[i];
+        Serial.println(String("at ")+i+ " " + curVals[i]+" new=" + newVals[i]+" paulse width="+pulesWidths[i] );
         curVals[i] = newVals[i];
       }
     }    
